@@ -1,6 +1,6 @@
 ---
 title: "Gov 50 Final Project"
-author: "Your Name Here"
+author: "Julia English"
 description: "My final project"
 output:
   distill::distill_article:
@@ -11,4 +11,4 @@ output:
 
 ## Project thoughts
 
-I am interested in exploring data related to...
+I am interested in exploring data related to rural education access data possibly through the Urban institute data. Or I was thinking about district spending data though Georgetown's National Education Resource Database on Schools. My next step would be to look through these data sets and see if there are any interesting facets. 
