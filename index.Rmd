@@ -11,9 +11,46 @@ output:
 
 ## Project thoughts
 
-I am interested in exploring data related to rural education access data possibly through the Urban institute data. Or I was thinking about district spending data though Georgetown's National Education Resource Database on Schools. My next step would be to look through these data sets and see if there are any interesting facets. 
+In education, there are conversations surrounding what contributes most to student success. NYC department of education has open testing data, teacher survey data and demographic data at the school level that I would like to investigate particularly in relation to math scores. 
 
 
 ## Proposal
 
-What affects teacher retention? For this data analysis, I'm interested in working with the Massachusetts Department of Education Schools and Districts data set. Right now there is a teacher shortage. However, because of contracted pay schedules and teacher pay being the greatest expenditure schools are searching for non-monetary ways to increase teacher retention. My theory is that quality of life aspects, not just pay would also influence retention. I'm hoping to look at incidence of in-school or out of school suspension, average class size, and number of class preps. My outcome variable would be teacher retention rate on the school level, measured in percent. My predictor variable would be average class size measured in number of students, in-school and out of school suspensions measured in percents and average class preps measured in number of classes. I want to run a multiple regression as variables in education are usually intertwined. For example a higher class size might have a higher rate of behavioral referrals. Holding these covariants constant and still seeing a statistically significant association would be convincing evidence.  
+What affects student success in math? For this data analysis, I'm interested in working with multiple data sets from the New York City Department of Education including the 2017 School Math results, the school level demographic snapshot and the public teacher data files. There are many items that could affect student outcomes. I want to specifically look at the impact of teacher expertise on math outcomes while holding for effectiveness of administration as well as the poverty rate of the school. My outcome variable would be 2017 math scores on the school level. There are a range of possible levels, but possible scores range from 134-400 My predictor variable would be teacher effectiveness scores measured on a scale from 1-10. I want to run a multiple regression as variables in education are usually intertwined. For example, teaching a high percentage of English Language Learners might affect how students complete complicate state test word problems. Holding these covariants constant and still seeing a statistically significant association would be convincing evidence. 
+
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(foreign)
+
+teachers <- read.csv("2017_Public_Data_File_Teacher.csv")
+math <- read.csv("2013-2017_School_Math_Results_-_All.csv")
+demographics <- read.csv("2013_-_2018_Demographic_Snapshot_School.csv")
+```
+
+```{r univariate distributions}
+
+
+
+math_sub <- math %>% 
+  filter(Year == 2017,
+         Grade == 8) %>% 
+  select(DBN, School.Name, Year, Number.Tested, Mean.Scale.Score) 
+
+math_sub$Mean.Scale.Score <- as.numeric(math_sub$Mean.Scale.Score)
+  
+
+math.plot <- math_sub %>% 
+  ggplot(mapping = aes(x = Mean.Scale.Score)) +
+  geom_histogram(color = "black", fill = "seagreen") +
+  labs(title = "Histogram of 2017 Math Scores for the 8th Grade",
+       x = "Average School Math Score",
+       y = "Count") +
+  geom_vline(aes(xintercept = 322), color = "violet")
+  
+
+math.plot
+
+```
+The purple line indicates the proficiency level for 2017 for 8th grade math students. 
