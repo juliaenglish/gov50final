@@ -52,5 +52,9 @@ math.plot <- math_sub %>%
 
 math.plot
 
+math_sub %>% 
+  select(Mean.Scale.Score) %>% 
+  summary()
+
 ```
 The purple line indicates the proficiency level for 2017 for 8th grade math students. 

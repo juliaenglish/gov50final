@@ -1553,10 +1553,23 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <span></span>
 <span><span class='va'>math.plot</span></span></code></pre>
 </div>
-<p><img src="index_files/figure-html5/univariate%20distributions-1.png" width="624" /></p>
+<img src="index_files/figure-html5/univariate%20distributions-1.png" width="624" />
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>math_sub</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='va'>Mean.Scale.Score</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
+<span>  <span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='op'>)</span></span></code></pre>
+</div>
+<pre><code> Mean.Scale.Score
+ Min.   :234.0   
+ 1st Qu.:273.0   
+ Median :286.0   
+ Mean   :287.7   
+ 3rd Qu.:302.0   
+ Max.   :369.0   
+ NA&#39;s   :4       </code></pre>
 </div>
 <p>The purple line indicates the proficiency level for 2017 for 8th grade math students.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
