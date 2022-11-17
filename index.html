@@ -115,7 +115,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["2013-2017_School_Math_Results_-_All.csv","2013_-_2018_Demographic_Snapshot_School.csv","2017_Public_Data_File_Teacher.csv","index_files/anchor-4.2.2/anchor.min.js","index_files/bowser-1.9.3/bowser.min.js","index_files/distill-2.2.21/template.v2.js","index_files/figure-html5/univariate distributions-1.png","index_files/header-attrs-2.16/header-attrs.js","index_files/header-attrs-2.17/header-attrs.js","index_files/jquery-3.6.0/jquery-3.6.0.js","index_files/jquery-3.6.0/jquery-3.6.0.min.js","index_files/jquery-3.6.0/jquery-3.6.0.min.map","index_files/popper-2.6.0/popper.min.js","index_files/tippy-6.2.7/tippy-bundle.umd.min.js","index_files/tippy-6.2.7/tippy-light-border.css","index_files/tippy-6.2.7/tippy.css","index_files/tippy-6.2.7/tippy.umd.min.js","index_files/webcomponents-2.0.0/webcomponents.js"]}
+  {"type":"character","attributes":{},"value":["2013-2017_School_Math_Results_-_All.csv","2013_-_2018_Demographic_Snapshot_School.csv","2017_Public_Data_File_Teacher.csv","index_files/anchor-4.2.2/anchor.min.js","index_files/bowser-1.9.3/bowser.min.js","index_files/distill-2.2.21/template.v2.js","index_files/figure-html5/univariate distributions-1.png","index_files/figure-html5/univariate distributions-2.png","index_files/figure-html5/unnamed-chunk-2-1.png","index_files/figure-html5/unnamed-chunk-2-2.png","index_files/header-attrs-2.16/header-attrs.js","index_files/header-attrs-2.17/header-attrs.js","index_files/jquery-3.6.0/jquery-3.6.0.js","index_files/jquery-3.6.0/jquery-3.6.0.min.js","index_files/jquery-3.6.0/jquery-3.6.0.min.map","index_files/popper-2.6.0/popper.min.js","index_files/tippy-6.2.7/tippy-bundle.umd.min.js","index_files/tippy-6.2.7/tippy-light-border.css","index_files/tippy-6.2.7/tippy.css","index_files/tippy-6.2.7/tippy.umd.min.js","index_files/webcomponents-2.0.0/webcomponents.js"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
   <!--/radix_placeholder_navigation_in_header-->
@@ -1540,36 +1540,118 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='va'>DBN</span>, <span class='va'>School.Name</span>, <span class='va'>Year</span>, <span class='va'>Number.Tested</span>, <span class='va'>Mean.Scale.Score</span><span class='op'>)</span> </span>
 <span></span>
 <span><span class='va'>math_sub</span><span class='op'>$</span><span class='va'>Mean.Scale.Score</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='va'>math_sub</span><span class='op'>$</span><span class='va'>Mean.Scale.Score</span><span class='op'>)</span></span>
-<span>  </span>
+<span></span>
+<span><span class='va'>math_sub</span> <span class='op'>&lt;-</span> <span class='va'>math_sub</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>b <span class='op'>=</span> <span class='fu'><a href='https://stringr.tidyverse.org/reference/str_sub.html'>str_sub</a></span><span class='op'>(</span><span class='va'>math_sub</span><span class='op'>$</span><span class='va'>DBN</span>,<span class='fl'>3</span>,<span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>math_sub</span> <span class='op'>&lt;-</span> <span class='va'>math_sub</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>Borough <span class='op'>=</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/case_when.html'>case_when</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/NA.html'>is.na</a></span><span class='op'>(</span><span class='va'>b</span><span class='op'>)</span> <span class='op'>~</span> <span class='st'>"Unknown"</span>, <span class='va'>b</span> <span class='op'>==</span> <span class='st'>"M"</span> <span class='op'>~</span> <span class='st'>"Manhattan"</span>,</span>
+<span>                             <span class='va'>b</span> <span class='op'>==</span> <span class='st'>"K"</span> <span class='op'>~</span> <span class='st'>"Brooklyn"</span>,</span>
+<span>                             <span class='va'>b</span> <span class='op'>==</span> <span class='st'>"Q"</span> <span class='op'>~</span> <span class='st'>"Queens"</span>,</span>
+<span>                             <span class='va'>b</span> <span class='op'>==</span> <span class='st'>"X"</span> <span class='op'>~</span> <span class='st'>"Bronx"</span>,</span>
+<span>                             <span class='va'>b</span> <span class='op'>==</span> <span class='st'>"R"</span> <span class='op'>~</span> <span class='st'>"Staten Island"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>math_sub</span> <span class='op'>&lt;-</span> <span class='va'>math_sub</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>district <span class='op'>=</span> <span class='fu'><a href='https://stringr.tidyverse.org/reference/str_sub.html'>str_sub</a></span><span class='op'>(</span><span class='va'>math_sub</span><span class='op'>$</span><span class='va'>DBN</span>,<span class='fl'>1</span>,<span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>  </span>
 <span></span>
 <span><span class='va'>math.plot</span> <span class='op'>&lt;-</span> <span class='va'>math_sub</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
 <span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span>mapping <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>Mean.Scale.Score</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
-<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_histogram.html'>geom_histogram</a></span><span class='op'>(</span>color <span class='op'>=</span> <span class='st'>"black"</span>, fill <span class='op'>=</span> <span class='st'>"seagreen"</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_histogram.html'>geom_histogram</a></span><span class='op'>(</span>color <span class='op'>=</span> <span class='st'>"black"</span>, fill <span class='op'>=</span> <span class='st'>"cadetblue1"</span><span class='op'>)</span> <span class='op'>+</span></span>
 <span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>title <span class='op'>=</span> <span class='st'>"Histogram of 2017 Math Scores for the 8th Grade"</span>,</span>
 <span>       x <span class='op'>=</span> <span class='st'>"Average School Math Score"</span>,</span>
 <span>       y <span class='op'>=</span> <span class='st'>"Count"</span><span class='op'>)</span> <span class='op'>+</span></span>
-<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_abline.html'>geom_vline</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>xintercept <span class='op'>=</span> <span class='fl'>322</span><span class='op'>)</span>, color <span class='op'>=</span> <span class='st'>"violet"</span><span class='op'>)</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_abline.html'>geom_vline</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>xintercept <span class='op'>=</span> <span class='fl'>322</span><span class='op'>)</span>, color <span class='op'>=</span> <span class='st'>"violet"</span><span class='op'>)</span> </span>
+<span>  </span>
 <span>  </span>
 <span></span>
 <span><span class='va'>math.plot</span></span></code></pre>
 </div>
 <img src="index_files/figure-html5/univariate%20distributions-1.png" width="624" />
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>math_sub</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
-<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='va'>Mean.Scale.Score</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
-<span>  <span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='op'>)</span></span></code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>math.plot2</span> <span class='op'>&lt;-</span> <span class='va'>math_sub</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span>mapping <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>Mean.Scale.Score</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_histogram.html'>geom_histogram</a></span><span class='op'>(</span>color <span class='op'>=</span> <span class='st'>"black"</span>, fill <span class='op'>=</span> <span class='st'>"seagreen"</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>title <span class='op'>=</span> <span class='st'>"Histogram of 2017 Math Scores for the 8th Grade"</span>,</span>
+<span>       x <span class='op'>=</span> <span class='st'>"Average School Math Score"</span>,</span>
+<span>       y <span class='op'>=</span> <span class='st'>"Count"</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_abline.html'>geom_vline</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>xintercept <span class='op'>=</span> <span class='fl'>322</span><span class='op'>)</span>, color <span class='op'>=</span> <span class='st'>"violet"</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/facet_wrap.html'>facet_wrap</a></span><span class='op'>(</span><span class='op'>~</span> <span class='va'>Borough</span><span class='op'>)</span></span>
+<span>  </span>
+<span></span>
+<span><span class='va'>math.plot2</span></span></code></pre>
 </div>
-<pre><code> Mean.Scale.Score
- Min.   :234.0   
- 1st Qu.:273.0   
- Median :286.0   
- Mean   :287.7   
- 3rd Qu.:302.0   
- Max.   :369.0   
- NA&#39;s   :4       </code></pre>
+<img src="index_files/figure-html5/univariate%20distributions-2.png" width="624" />
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>math_summary</span> <span class='op'>&lt;-</span> <span class='va'>math_sub</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
+<span>  <span class='fu'><a href='https://tidyr.tidyverse.org/reference/drop_na.html'>drop_na</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='va'>Mean.Scale.Score</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
+<span>  <span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='fu'>knitr</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/knitr/man/kable.html'>kable</a></span><span class='op'>(</span><span class='va'>math_summary</span>, col.names <span class='op'>=</span> <span class='st'>"Summary of Average Math Scores"</span><span class='op'>)</span></span></code></pre>
+</div>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">Summary of Average Math Scores</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Min. :234.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">1st Qu.:273.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Median :286.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Mean :287.7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">3rd Qu.:302.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">Max. :369.0</td>
+</tr>
+</tbody>
+</table>
 </div>
 <p>The purple line indicates the proficiency level for 2017 for 8th grade math students.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>teachers</span><span class='op'>$</span><span class='va'>Collaborative.Teachers.Score</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='va'>teachers</span><span class='op'>$</span><span class='va'>Collaborative.Teachers.Score</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>teachers</span><span class='op'>$</span><span class='va'>Rigorous.Instruction.Score</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='va'>teachers</span><span class='op'>$</span><span class='va'>Rigorous.Instruction.Score</span><span class='op'>)</span></span>
+<span></span>
+<span></span>
+<span><span class='va'>teacher.effectiveness</span> <span class='op'>&lt;-</span> <span class='va'>teachers</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span>mapping <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>Collaborative.Teachers.Score</span>,</span>
+<span>                       y <span class='op'>=</span> <span class='va'>Rigorous.Instruction.Score</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='st'>"Collaborative Teachers Score"</span>,</span>
+<span>       y <span class='op'>=</span> <span class='st'>"Rigorous Instruction Score"</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>teacher.effectiveness</span></span></code></pre>
+</div>
+<img src="index_files/figure-html5/unnamed-chunk-2-1.png" width="624" />
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>teacher.instruction</span> <span class='op'>&lt;-</span> <span class='va'>teachers</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span>mapping <span class='op'>=</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>Collaborative.Teachers.Score</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_boxplot.html'>geom_boxplot</a></span><span class='op'>(</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>teacher.instruction</span></span></code></pre>
+</div>
+<p><img src="index_files/figure-html5/unnamed-chunk-2-2.png" width="624" /></p>
+</div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>

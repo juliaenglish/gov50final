@@ -39,22 +39,75 @@ math_sub <- math %>%
   select(DBN, School.Name, Year, Number.Tested, Mean.Scale.Score) 
 
 math_sub$Mean.Scale.Score <- as.numeric(math_sub$Mean.Scale.Score)
-  
+
+math_sub <- math_sub %>%
+  mutate(b = str_sub(math_sub$DBN,3,3))
+
+math_sub <- math_sub %>%
+  mutate(Borough = case_when(is.na(b) ~ "Unknown", b == "M" ~ "Manhattan",
+                             b == "K" ~ "Brooklyn",
+                             b == "Q" ~ "Queens",
+                             b == "X" ~ "Bronx",
+                             b == "R" ~ "Staten Island"))
+
+math_sub <- math_sub %>%
+  mutate(district = str_sub(math_sub$DBN,1,2))  
 
 math.plot <- math_sub %>% 
+  ggplot(mapping = aes(x = Mean.Scale.Score)) +
+  geom_histogram(color = "black", fill = "cadetblue1") +
+  labs(title = "Histogram of 2017 Math Scores for the 8th Grade",
+       x = "Average School Math Score",
+       y = "Count") +
+  geom_vline(aes(xintercept = 322), color = "violet") 
+  
+  
+
+math.plot
+
+math.plot2 <- math_sub %>% 
   ggplot(mapping = aes(x = Mean.Scale.Score)) +
   geom_histogram(color = "black", fill = "seagreen") +
   labs(title = "Histogram of 2017 Math Scores for the 8th Grade",
        x = "Average School Math Score",
        y = "Count") +
-  geom_vline(aes(xintercept = 322), color = "violet")
+  geom_vline(aes(xintercept = 322), color = "violet") +
+  facet_wrap(~ Borough)
   
 
-math.plot
+math.plot2
 
-math_sub %>% 
+math_summary <- math_sub %>% 
+  drop_na() %>% 
   select(Mean.Scale.Score) %>% 
   summary()
 
+knitr::kable(math_summary, col.names = "Summary of Average Math Scores")
+
 ```
 The purple line indicates the proficiency level for 2017 for 8th grade math students. 
+
+```{r}
+
+teachers$Collaborative.Teachers.Score <- as.numeric(teachers$Collaborative.Teachers.Score)
+
+teachers$Rigorous.Instruction.Score <- as.numeric(teachers$Rigorous.Instruction.Score)
+
+
+teacher.effectiveness <- teachers %>% 
+  ggplot(mapping = aes(x = Collaborative.Teachers.Score,
+                       y = Rigorous.Instruction.Score)) +
+  geom_point() +
+  labs(x = "Collaborative Teachers Score",
+       y = "Rigorous Instruction Score")
+
+teacher.effectiveness
+
+teacher.instruction <- teachers %>% 
+  ggplot(mapping = aes(x = Collaborative.Teachers.Score)) +
+  geom_boxplot()
+
+teacher.instruction
+```
+
+
