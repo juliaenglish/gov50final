@@ -27,16 +27,26 @@ library(foreign)
 teachers <- read.csv("2017_Public_Data_File_Teacher.csv")
 math <- read.csv("2013-2017_School_Math_Results_-_All.csv")
 demographics <- read.csv("2013_-_2018_Demographic_Snapshot_School.csv")
-```
-
-```{r univariate distributions}
-
-
 
 math_sub <- math %>% 
   filter(Year == 2017,
          Grade == 8) %>% 
   select(DBN, School.Name, Year, Number.Tested, Mean.Scale.Score) 
+
+math_sub <- left_join(
+    math_sub, 
+    teachers |> select(-School.Name)) |>
+  left_join(
+      demographics |> 
+        select(-School.Name) |>
+        filter(Year == "2016-17") |>
+        mutate(Year = 2017))
+
+```
+
+```{r univariate distributions}
+
+
 
 math_sub$Mean.Scale.Score <- as.numeric(math_sub$Mean.Scale.Score)
 
@@ -91,6 +101,8 @@ The purple line indicates the proficiency level for 2017 for 8th grade math stud
 
 teachers$Collaborative.Teachers.Score <- as.numeric(teachers$Collaborative.Teachers.Score)
 
+math_sub$Collaborative.Teachers.Score <- as.numeric(math_sub$Collaborative.Teachers.Score)
+
 teachers$Rigorous.Instruction.Score <- as.numeric(teachers$Rigorous.Instruction.Score)
 
 
@@ -110,4 +122,15 @@ teacher.instruction <- teachers %>%
 teacher.instruction
 ```
 
+```{r}
+fit <- lm(Mean.Scale.Score ~ Collaborative.Teachers.Score, data = math_sub)
+
+summary(fit)
+
+fit.controls <- lm(Mean.Scale.Score ~ Collaborative.Teachers.Score + X..Poverty.1 + X..English.Language.Learners.1 + X..Students.with.Disabilities.1, data = math_sub)
+
+summary(fit.controls)
+
+
+```
 

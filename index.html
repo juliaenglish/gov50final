@@ -1529,17 +1529,26 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <span></span>
 <span><span class='va'>teachers</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/utils/read.table.html'>read.csv</a></span><span class='op'>(</span><span class='st'>"2017_Public_Data_File_Teacher.csv"</span><span class='op'>)</span></span>
 <span><span class='va'>math</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/utils/read.table.html'>read.csv</a></span><span class='op'>(</span><span class='st'>"2013-2017_School_Math_Results_-_All.csv"</span><span class='op'>)</span></span>
-<span><span class='va'>demographics</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/utils/read.table.html'>read.csv</a></span><span class='op'>(</span><span class='st'>"2013_-_2018_Demographic_Snapshot_School.csv"</span><span class='op'>)</span></span></code></pre>
-</div>
-</div>
-<div class="layout-chunk" data-layout="l-body">
-<div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>math_sub</span> <span class='op'>&lt;-</span> <span class='va'>math</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
+<span><span class='va'>demographics</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/utils/read.table.html'>read.csv</a></span><span class='op'>(</span><span class='st'>"2013_-_2018_Demographic_Snapshot_School.csv"</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>math_sub</span> <span class='op'>&lt;-</span> <span class='va'>math</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
 <span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>Year</span> <span class='op'>==</span> <span class='fl'>2017</span>,</span>
 <span>         <span class='va'>Grade</span> <span class='op'>==</span> <span class='fl'>8</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span> </span>
 <span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='va'>DBN</span>, <span class='va'>School.Name</span>, <span class='va'>Year</span>, <span class='va'>Number.Tested</span>, <span class='va'>Mean.Scale.Score</span><span class='op'>)</span> </span>
 <span></span>
-<span><span class='va'>math_sub</span><span class='op'>$</span><span class='va'>Mean.Scale.Score</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='va'>math_sub</span><span class='op'>$</span><span class='va'>Mean.Scale.Score</span><span class='op'>)</span></span>
+<span><span class='va'>math_sub</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate-joins.html'>left_join</a></span><span class='op'>(</span></span>
+<span>    <span class='va'>math_sub</span>, </span>
+<span>    <span class='va'>teachers</span> <span class='op'>|&gt;</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='op'>-</span><span class='va'>School.Name</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate-joins.html'>left_join</a></span><span class='op'>(</span></span>
+<span>      <span class='va'>demographics</span> <span class='op'>|&gt;</span> </span>
+<span>        <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='op'>-</span><span class='va'>School.Name</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
+<span>        <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>Year</span> <span class='op'>==</span> <span class='st'>"2016-17"</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
+<span>        <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>Year <span class='op'>=</span> <span class='fl'>2017</span><span class='op'>)</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>math_sub</span><span class='op'>$</span><span class='va'>Mean.Scale.Score</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='va'>math_sub</span><span class='op'>$</span><span class='va'>Mean.Scale.Score</span><span class='op'>)</span></span>
 <span></span>
 <span><span class='va'>math_sub</span> <span class='op'>&lt;-</span> <span class='va'>math_sub</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
 <span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>b <span class='op'>=</span> <span class='fu'><a href='https://stringr.tidyverse.org/reference/str_sub.html'>str_sub</a></span><span class='op'>(</span><span class='va'>math_sub</span><span class='op'>$</span><span class='va'>DBN</span>,<span class='fl'>3</span>,<span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span></span>
@@ -1607,11 +1616,11 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </tr>
 <tr class="odd">
 <td style="text-align: left;"></td>
-<td style="text-align: left;">Median :286.0</td>
+<td style="text-align: left;">Median :287.0</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;"></td>
-<td style="text-align: left;">Mean :287.7</td>
+<td style="text-align: left;">Mean :288.1</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;"></td>
@@ -1628,6 +1637,8 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
 <pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>teachers</span><span class='op'>$</span><span class='va'>Collaborative.Teachers.Score</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='va'>teachers</span><span class='op'>$</span><span class='va'>Collaborative.Teachers.Score</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>math_sub</span><span class='op'>$</span><span class='va'>Collaborative.Teachers.Score</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='va'>math_sub</span><span class='op'>$</span><span class='va'>Collaborative.Teachers.Score</span><span class='op'>)</span></span>
 <span></span>
 <span><span class='va'>teachers</span><span class='op'>$</span><span class='va'>Rigorous.Instruction.Score</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='va'>teachers</span><span class='op'>$</span><span class='va'>Rigorous.Instruction.Score</span><span class='op'>)</span></span>
 <span></span>
@@ -1651,7 +1662,69 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </div>
 <p><img src="index_files/figure-html5/unnamed-chunk-2-2.png" width="624" /></p>
 </div>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>fit</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>Mean.Scale.Score</span> <span class='op'>~</span> <span class='va'>Collaborative.Teachers.Score</span>, data <span class='op'>=</span> <span class='va'>math_sub</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>fit</span><span class='op'>)</span></span></code></pre>
+</div>
+<pre><code>
+Call:
+lm(formula = Mean.Scale.Score ~ Collaborative.Teachers.Score, 
+    data = math_sub)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-46.740 -13.985  -0.941  13.249  68.807 
+
+Coefficients:
+                             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)                   249.764      5.579  44.772  &lt; 2e-16 ***
+Collaborative.Teachers.Score   10.939      1.469   7.446 7.23e-13 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 19.67 on 358 degrees of freedom
+  (87 observations deleted due to missingness)
+Multiple R-squared:  0.1341,    Adjusted R-squared:  0.1317 
+F-statistic: 55.45 on 1 and 358 DF,  p-value: 7.229e-13</code></pre>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>fit.controls</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>Mean.Scale.Score</span> <span class='op'>~</span> <span class='va'>Collaborative.Teachers.Score</span> <span class='op'>+</span> <span class='va'>X..Poverty.1</span> <span class='op'>+</span> <span class='va'>X..English.Language.Learners.1</span> <span class='op'>+</span> <span class='va'>X..Students.with.Disabilities.1</span>, data <span class='op'>=</span> <span class='va'>math_sub</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>fit.controls</span><span class='op'>)</span></span></code></pre>
+</div>
+<pre><code>
+Call:
+lm(formula = Mean.Scale.Score ~ Collaborative.Teachers.Score + 
+    X..Poverty.1 + X..English.Language.Learners.1 + X..Students.with.Disabilities.1, 
+    data = math_sub)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-53.531 -11.338   0.741  11.734  56.077 
+
+Coefficients:
+                                 Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)                     310.03450    7.49337  41.375  &lt; 2e-16
+Collaborative.Teachers.Score      6.43646    1.34558   4.783 2.53e-06
+X..Poverty.1                     -0.24934    0.05470  -4.558 7.10e-06
+X..English.Language.Learners.1   -0.06813    0.08366  -0.814    0.416
+X..Students.with.Disabilities.1  -1.09375    0.14374  -7.609 2.50e-13
+                                   
+(Intercept)                     ***
+Collaborative.Teachers.Score    ***
+X..Poverty.1                    ***
+X..English.Language.Learners.1     
+X..Students.with.Disabilities.1 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 17.11 on 355 degrees of freedom
+  (87 observations deleted due to missingness)
+Multiple R-squared:  0.3505,    Adjusted R-squared:  0.3432 
+F-statistic:  47.9 on 4 and 355 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
