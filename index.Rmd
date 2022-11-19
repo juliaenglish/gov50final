@@ -16,10 +16,11 @@ In education, there are conversations surrounding what contributes most to stude
 
 ## Proposal
 
-What affects student success in math? For this data analysis, I'm interested in working with multiple data sets from the New York City Department of Education including the 2017 School Math results, the school level demographic snapshot and the public teacher data files. There are many items that could affect student outcomes. I want to specifically look at the impact of teacher expertise on math outcomes while holding for effectiveness of administration as well as the poverty rate of the school. My outcome variable would be 2017 math scores on the school level. There are a range of possible levels, but possible scores range from 134-400 My predictor variable would be teacher effectiveness scores measured on a scale from 1-10. I want to run a multiple regression as variables in education are usually intertwined. For example, teaching a high percentage of English Language Learners might affect how students complete complicate state test word problems. Holding these covariants constant and still seeing a statistically significant association would be convincing evidence. 
+What is correlated with student success in math? For this data analysis, I'm interested in working with multiple data sets from the New York City Department of Education including the 2017 School Math results, the school level demographic snapshot and the public teacher data files. As many classroom teachers know, there are multiple factors that can correlate with student success, beyond instruction in the classroom. I want to specifically look at the relationship between "collaborative" teachers with regards to math outcomes while holding for possible confounding variables that might obscure this relationship. My outcome variable would be 2017 math scores on the school level. There are a range of possible levels which range from 134-400. My predictor variable would be collaborative teacher scores measured on a scale from 1-10. I want to run a multiple regression as variables in education are usually intertwined. For example, teaching a high percentage of English Language Learners might affect how students complete complicated state test word problems. Holding these covariants constant and still seeing a statistically significant association would be convincing evidence. 
 
 
 ```{r}
+library(ggExtra)
 library(tidyverse)
 library(ggplot2)
 library(foreign)
@@ -106,12 +107,12 @@ math_sub$Collaborative.Teachers.Score <- as.numeric(math_sub$Collaborative.Teach
 teachers$Rigorous.Instruction.Score <- as.numeric(teachers$Rigorous.Instruction.Score)
 
 
-teacher.effectiveness <- teachers %>% 
+teacher.effectiveness <- math_sub %>% 
   ggplot(mapping = aes(x = Collaborative.Teachers.Score,
-                       y = Rigorous.Instruction.Score)) +
+                       y = Mean.Scale.Score)) +
   geom_point() +
   labs(x = "Collaborative Teachers Score",
-       y = "Rigorous Instruction Score")
+       y = "Average Math Score") 
 
 teacher.effectiveness
 
@@ -127,10 +128,15 @@ fit <- lm(Mean.Scale.Score ~ Collaborative.Teachers.Score, data = math_sub)
 
 summary(fit)
 
+
 fit.controls <- lm(Mean.Scale.Score ~ Collaborative.Teachers.Score + X..Poverty.1 + X..English.Language.Learners.1 + X..Students.with.Disabilities.1, data = math_sub)
 
 summary(fit.controls)
 
 
+confint(fit.controls)
+
+
 ```
 
+In the fitted model with the controls we can see there is a positive association between the teacher collaborative score and average math score. An increase in a collaborative score of 1 unit would predict a six point difference in resulting math scores. Our p value is below .01 which means we have enough evidence to reject the null hypothesis of no association. 
