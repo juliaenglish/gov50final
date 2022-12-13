@@ -1,18 +1,28 @@
 ---
 title: "Gov 50 Final Project"
 author: "Julia English"
-description: "My final project"
+description: "Collaborative Teachers and Math Scores in New York City Schools"
 output:
   distill::distill_article:
     self_contained: false
 ---
 
-```{r reading in data + data cleaning}
+
+```{r setup, include = FALSE}
+options(width = 100)
+
+```
+
+
+
+```{r reading in data}
 library(ggExtra)
 library(tidyverse)
 library(ggplot2)
 library(foreign)
 library(e1071)
+library(texreg)
+library(modelsummary)
 
 teachers <- read.csv("2017_Public_Data_File_Teacher.csv")
 math <- read.csv("2013-2017_School_Math_Results_-_All.csv")
@@ -51,22 +61,24 @@ math_sub <- math_sub %>%
 
 ## Introduction
 
-In education, there are conversations surrounding what contributes most to student success. Is it per pupil expenditures, a superlative leadership team, teachers with in-depth content knowledge, teachers who communicate with parents effectively, or the efforts of an entire community? It is difficult to make causal claims in education as it is enormously challenging to control for extraneous variables in a dynamic school ecosystem. 
+In education, there are continuous and controversial conversations surrounding student success. What attributes of a school have the greatest import? School leadership has a litany of options to prioritize such as instructional resources, professional development, social-emotional learning, and community outreach. It is difficult to make evidence based decisions, when all of these attributes mix in the school environment.    
 
-For this analysis I endeavor to investigate the relationship between teacher contributions to a learning environment and math scores. Within the New York City School survey, there is a collaborative teachers section which measures teacher involvement in "opportunities to develop, grow, and contribute to the continuous improvement of the school community". My hypothesis is that schools with higher"collaborative" teaching scores tend to have higher 8th grade math scores, while holding for possible confounding variables that might obscure this relationship. 
+The recently released NAEP results have shown that most students lost content knowledge in math. There is great discussion on the best way to implement remediation. Do we go back to fundamentals, with increased expenditures on tutoring and an extended school year? Or do we focus on social emotional needs with an emphasis on creating an optimal learning environment? This investigation can not provide any causal claims. However, it can be a starting point to determine if a relationship exists between student success in math and teachers efforts beyond strict academics.
 
-Recently, the NAEP results have been released. Most students have lost content knowledge in math. There is great discussion on remediation. Do we go back to fundamentals, with increased expenditures on tutoring and an extended school year? Or do we focus on social emotional needs with an emphasis on creating an optimal learning environment? This investigation can not provide any causal claims. However, it can be a starting point to determine if a relationship exists between student success in math and teachers efforts beyond strict academics. 
+For this analysis, I endeavor to investigate the relationship between teacher contributions to a learning environment and math scores. Within the New York City School survey, there is a collaborative teachers section which measures teacher involvement in "opportunities to develop, grow, and contribute to the continuous improvement of the school community". My hypothesis is that schools with higher "collaborative" teaching scores tend to have higher 8th grade math scores, while holding for possible confounding variables that might obscure this relationship. 
+
 
 ## Data
 
-For this data analysis, I'm interested in working with multiple data sets from the New York City Department of Education including the 2017 School Math results, the school level demographic snapshot and the School Survey data files(how do I cite in rmarkdown?). All data is from the 2016-2017 school year and is at the school level. 
+For this data analysis, I'm interested in working with multiple data sets from the New York City Department of Education including the 2017 School Math results, the School Level Demographic Snapshot and the School Survey data files. All data is from the 2016-2017 school year and is at the school level. 
 
 **Outcome Variable**
-My outcome variable would be average scaled math scores on the school level. This data is taken from the 2013-2107 School Math Results data set and is measured in points. I filtered the data set to include only results from the 8th grade in 2017. There are a range of possible test scores which include 134-400. For teachers and the general public, proficiency is the most important metric, which is a score of 322 or higher for the 8th grade in 2017 (grading citation). 
 
-The data for average school math scores has a mean of 288.1 and a median of 287.0. It has a maximum of 369 and a minimum of 234. The IQR is 29 points and the standard deviation is 21. Overall the entire data set has significant spread but the middle 50% is within 29 points. 
+The outcome variable or dependent variable, is average school New York State math test scores. This data is taken from the 2013-2017 School Math Results data set and is measured in points. I filtered the data set to include only results from the 8th grade in 2017. There is a range of possible individual test scores which include 134-400. For teachers and the general public, proficiency is the most important metric, which is a score of 322 or higher for the 8th grade in 2017. 
 
-According to the aggregate histogram, the data is slightly skewed to the right. I wanted to also visualize the data based upon borough. The purple line in all of the histograms indicates the proficiency level. While some boroughs do reach a higher level of proficiency, most schools do not have an average math score that would be considered proficient. According to the data only about 6% of schools have a proficent average math score.    
+The data for average school math scores has a mean of 288.1 and a median of 287.0. It has a maximum of 369 and a minimum of 234. The IQR is 29 points and the standard deviation is about 21 points. Overall, the entire data set has significant spread although the the middle 50% is clustered within 29 points. 
+
+According to the aggregate histogram, the data is slightly skewed to the right. I wanted to also visualize the data based upon borough to investigate if there were major differences in scores. The purple line in all of the histograms indicates the proficiency level. While some boroughs do reach a higher level of proficiency, most schools do not have an average math score that would be considered proficient. According to the data only about 6% of schools have a proficient average math score.    
 
 ```{r outcome variable}
 
@@ -118,12 +130,15 @@ math_proficiency
 
 **Predictor Variable**
 
-My predictor variable would be collaborative teacher scores measured on a scale from 1-5. This data is based on survey results from the NYC school survey. This information is also on the school level. This score is aggregated from how parents students and teachers believe the teaching staff is doing to create an optimal learning environment. This is not a content expertise metric. The survey focuses on elements such as cultural awareness and classroom inclusiveness, innovation, peer collaboration, quality of professional development and school commitment. 
+My predictor variable or independent variable is collaborative teacher scores measured on a scale from 0-5. This data is based on survey results from the NYC School Survey. This information is also on the school level. This score is compiled from how parents, students, and teachers believe the teaching staff is doing to create an optimal learning environment. This is not a content expertise metric. The survey focuses on elements such as cultural awareness, classroom inclusiveness, innovation, peer collaboration, quality of professional development and school commitment. 
 
 **Controls**
 
-I want to run a multiple regression as to control for variables that might affect student outcomes. My controls derive from the demographic data set from 2017. I'm controlling for the poverty level of the school, the percentage of English language learners and the percentage of students with disabilities. For example, teaching a high percentage of English Language Learners might affect how students complete complicated state test word problems. Holding these covariants constant and still seeing a statistically significant association, would provide convincing evidence. 
+I aim to run a multiple regression as to control for variables that might affect student outcomes. My controls derive from the demographic data set from 2017. I'm controlling for the poverty level of the school, the percentage of English language learners and the percentage of students with disabilities. For example, teaching a high percentage of English Language Learners might affect how students complete complicated state test word problems. Holding these variables constant and still seeing a statistically significant association, would provide convincing evidence of a relationship. 
 
+**Type of Research**
+
+This is a cross sectional research design to analyze a possible relationship in the population. 
 
 
 ## Results
@@ -142,7 +157,7 @@ teacher.effectiveness <- math_sub %>%
   ggplot(mapping = aes(x = Collaborative.Teachers.Score,
                        y = Mean.Scale.Score)) +
   geom_point() +
-  geom_smooth(method = "loess", se = FALSE) +
+  geom_smooth(method = "loess", se = FALSE, color = "cyan") +
   labs(title = "Collaborative Teachers and Average Math Scores",
     x = "Collaborative Teachers Score",
        y = "Average Math Score") 
@@ -157,46 +172,58 @@ teacher.effectiveness
 ```{r}
 fit <- lm(Mean.Scale.Score ~ Collaborative.Teachers.Score, data = math_sub)
 
-summary(fit)
+
 
 
 fit.controls <- lm(Mean.Scale.Score ~ Collaborative.Teachers.Score + X..Poverty.1 + X..English.Language.Learners.1 + X..Students.with.Disabilities.1, data = math_sub)
 
-summary(fit.controls)
 
 
 confint(fit.controls)
+
+screenreg(list(fit,fit.controls))
 
 
 ```
 ## Summary of Results
 
 **Scatter Plot**
+
 In the scatterplot, there is a positive correlation between the average school collaborative teacher score and the average math score. The relationship appears to be fairly linear and moderately weak.
 
 
 **Null Hypothesis**
+
 The null hypothesis is that there is no association between average collaborative teacher scores and average math scores in the population when holding the percent of English language learners, the poverty level and the percent of students with disabilities constant. 
 
 **Simple Linear Regression**
 
-I fit a regression of average math scores on average teacher collaboration score. The slope in the fitted regression equation indicates that for every additional point on the collaborative teachers score predicts a difference of 10.9 points in average math score. The slope of the fitted model is positive which indicates that schools districts with a higher collaborative teacher score, tend to have higher average math scores. The intercept of 249.8 indicates that at a average collaborative teacher score of 0, there would be a predicted average math score of about 249.8 points.  
+I fit a regression of average math scores on average teacher collaboration score. The slope in the fitted regression equation indicates that for every additional point on the collaborative teachers score predicts a difference of 10.9 points in average math score. The slope of the fitted model is positive which indicates that schools with a higher collaborative teacher score, tend to have higher average math scores. The intercept of 249.8 indicates that at a average collaborative teacher score of 0, there would be a predicted average math score of about 249.8 points.  
 
-We can reject the null hypothesis of no association between average math scores and average teacher collaboration scores (t(df = 358) = 7.45, p < .001).
+Our results are statistically significant. We have enough evidence to reject the null hypothesis of no association between average math scores and average teacher collaboration scores (t(df = 358) = 7.45, p < .001).
 
 
 **Multiple Linear Regression**
 
-We fit a multiple linear regression of average math scores on average collaborative teacher score holding constant the poverty rate, percentage of students with disabilities, and percentage of English language learners. In this model I estimate that holding the controls constant, a 1 point increase in average collaborative teaching score is associated with a 6.4 percentage point difference in average math score. The intercept predicts that the average math score would be 310 when the collaborative teacher score, poverty rate, percentage of English language learners, and percentage of students with disabilities are all 0. 
+I fit a multiple linear regression of average math scores on average collaborative teacher score holding constant the poverty rate, percentage of students with disabilities, and percentage of English language learners. In this model I estimate that, holding the controls constant, a 1 point increase in average collaborative teaching score is associated with a 6.4 point difference in average math score. The intercept predicts that the average math score would be 310 when the collaborative teacher score, poverty rate, percentage of English language learners, and percentage of students with disabilities are all 0. 
 
-We can reject the null hypothesis of no association between average teacher collaboration score and average math score (t(df = 355) = 4.78, p < .001, 95% CI = 3.79, 9.08). 
-In our fitted multiple linear regression model, we can see that when holding for the controls there is a slightly less steep association between the average collaborative teacher score and the average math score compared to our simple linear regression model. 
+Our results are statistically significant. We have enough evidence to reject the null hypothesis of no association between average teacher collaboration score and average math score (t(df = 355) = 4.78, p < .001, 95% CI = 3.79, 9.08). 
+
+In our fitted multiple linear regression model, we can see that when holding for the controls, there is a slightly less steep association between the average collaborative teacher score and the average math score compared to our simple linear regression model. 
 
 In both fitted models the association is fairly weak. 
 
 **Limitations and Further Study**
 
-None of this analysis is causal. I cannot state that collaborative teachers cause student success in mathematics. However, there is a relationship. For further study, it would be beneficial to conduct a random control trial.
+None of this analysis is causal. I cannot state that collaborative teachers cause student success in mathematics. However, there is enough evidence to support the existance of a relationship in the population. For further study, it would be beneficial to conduct a random control trial.
 
-Further, it also might be helpful to obtain data at the student and teacher level. At the school level it is difficult to ascertain a relationship between the two variables. 
+Further, it also might be helpful to obtain data at the student and teacher level, which the current data sets do not provide. At the school level, data is averaged and it is difficult to ascertain a relationship between the two variables. Additionally, it would be helpful to control for other possible confounding variables such a per pupil expenditures or years of teacher experience, which might affect student outcomes.  
+
+
+
+# Code
+
+```{r print-code, ref.label=knitr::all_labels(), echo = TRUE, eval=FALSE}
+
+```
 
